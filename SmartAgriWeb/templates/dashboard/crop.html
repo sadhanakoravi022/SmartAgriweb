@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}SmartAgriWeb | Crop Management{% endblock %}
+
+{% block head %}
+<style>
+.header { background: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; }
+.content { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+.sector { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.sector-box { padding: 15px; border-radius: 8px; color: white; }
+.sector-box.green { background: #2ecc71; }
+.sector-box.yellow { background: #f1c40f; color: #333; }
+.sector-box.gray { background: #bdc3c7; color: #333; }
+.bar { height: 8px; background: #eee; border-radius: 5px; overflow: hidden; margin: 5px 0 15px; }
+.bar span { display: block; height: 100%; background: #2ecc71; }
+.map iframe { width: 100%; height: 250px; border-radius: 10px; border: none; }
+#searchResultCard { display: none; }
+#searchResultCard.visible { display: block !important; margin-top: 15px; }
+#defaultDetails.hidden { display: none !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+  <h3>Crop field Management</h3>
+  <input class="search" id="searchInput" placeholder="Search for a fruit or vegetable...">
+</div>
+
+<div class="content">
+  <div>
+    <div class="card">
+      <h4>Field Status Grid</h4>
+      <div class="sector">
+        <div class="sector-box green"><b>Sector A</b><br>Crop: Soyabean<br>Status: Healthy<br>Last Activity: Irrigation (Yesterday)</div>
+        <div class="sector-box yellow"><b>Sector B</b><br>Crop: Corn<br>Status: Monitoring Required<br>Last Activity: Manual Scouting (Today)</div>
+        <div class="sector-box green"><b>Sector C</b><br>Crop: Wheat<br>Status: Healthy</div>
+        <div class="sector-box gray"><b>Sector D</b><br>Fallow / Empty</div>
+      </div>
+    </div>
+    <div class="card map">
+      <h4>Satellite View</h4>
+      <iframe src="https://maps.google.com/maps?q=farm&t=k&z=15&output=embed"></iframe>
+    </div>
+  </div>
+  <div>
+    <div id="defaultDetails">
+      <div class="card">
+        <h4>Sector B Details</h4>
+        <p><b>Crop:</b> Corn</p>
+        <p><b>Status:</b> Vegetative Stage</p>
+        <p><b>Day:</b> 45 / 120</p>
+      </div>
+      <div class="card">
+        <h4>Lab Test Results</h4>
+        Nitrogen – 90%<div class="bar"><span style="width:90%"></span></div>
+        Phosphorus – 60%<div class="bar"><span style="width:60%"></span></div>
+        Potassium – 75%<div class="bar"><span style="width:75%"></span></div>
+      </div>
+      <div class="card">
+        <h4>Disease Log</h4>
+        <p>🕘 Today 9:10 AM – Yellowing noticed</p>
+        <p>🕓 Yesterday – Routine check</p>
+      </div>
+    </div>
+    <div class="card" id="searchResultCard"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cropData = {
+  soyabean: { name: 'Soyabean', sector: 'A', status: 'Healthy', stage: 'Flowering', day: '32/90', water: '35 L/day', nitrogen: 85, phosphorus: 72, potassium: 68, activity: 'Irrigation (Yesterday)', diseases: 'None reported' },
+  soybean: { name: 'Soyabean', sector: 'A', status: 'Healthy', stage: 'Flowering', day: '32/90', water: '35 L/day', nitrogen: 85, phosphorus: 72, potassium: 68, activity: 'Irrigation (Yesterday)', diseases: 'None reported' },
+  corn: { name: 'Corn', sector: 'B', status: 'Monitoring Required', stage: 'Vegetative Stage', day: '45/120', water: '40 L/day', nitrogen: 90, phosphorus: 60, potassium: 75, activity: 'Manual Scouting (Today)', diseases: 'Today 9:10 AM – Yellowing noticed' },
+  wheat: { name: 'Wheat', sector: 'C', status: 'Healthy', stage: 'Tillering', day: '28/110', water: '30 L/day', nitrogen: 78, phosphorus: 65, potassium: 82, activity: 'Routine check (Yesterday)', diseases: 'None reported' },
+  tomato: { name: 'Tomatoes', sector: 'Greenhouse', status: 'Healthy', stage: 'Flowering', day: '45/100', water: '40 L/day', nitrogen: 88, phosphorus: 70, potassium: 75, activity: 'Irrigation (Today)', diseases: 'None reported' },
+  tomatoes: { name: 'Tomatoes', sector: 'Greenhouse', status: 'Healthy', stage: 'Flowering', day: '45/100', water: '40 L/day', nitrogen: 88, phosphorus: 70, potassium: 75, activity: 'Irrigation (Today)', diseases: 'None reported' },
+  cucumber: { name: 'Cucumbers', sector: 'Plot 2', status: 'Low Water', stage: 'Harvesting', day: '65/70', water: '30 L/day', nitrogen: 65, phosphorus: 58, potassium: 72, activity: 'Irrigation needed', diseases: 'None reported' },
+  cucumbers: { name: 'Cucumbers', sector: 'Plot 2', status: 'Low Water', stage: 'Harvesting', day: '65/70', water: '30 L/day', nitrogen: 65, phosphorus: 58, potassium: 72, activity: 'Irrigation needed', diseases: 'None reported' },
+  spinach: { name: 'Spinach', sector: 'Plot 3', status: 'Over-Irrigation', stage: 'Growing', day: '25/45', water: '25 L/day', nitrogen: 92, phosphorus: 68, potassium: 65, activity: 'Reduce irrigation', diseases: 'None reported' },
+  potato: { name: 'Potato', sector: 'Storage', status: 'Healthy', stage: 'Harvested', day: '—', water: '—', nitrogen: 80, phosphorus: 75, potassium: 85, activity: 'In storage', diseases: 'None reported' },
+  mango: { name: 'Mango', sector: 'Orchard', status: 'Healthy', stage: 'Fruiting', day: '—', water: '50 L/day', nitrogen: 75, phosphorus: 70, potassium: 80, activity: 'Last irrigation 2 days ago', diseases: 'None reported' }
+};
+
+const searchInput = document.getElementById('searchInput');
+const defaultDetails = document.getElementById('defaultDetails');
+const searchResultCard = document.getElementById('searchResultCard');
+
+searchInput.addEventListener('input', function() {
+  const query = this.value.trim().toLowerCase();
+  
+  if (!query) {
+    searchResultCard.classList.remove('visible');
+    defaultDetails.classList.remove('hidden');
+    searchResultCard.innerHTML = '';
+    return;
+  }
+
+  const matches = Object.keys(cropData).filter(key => key.includes(query) || cropData[key].name.toLowerCase().includes(query));
+  const unique = [...new Map(matches.map(k => [cropData[k].name, cropData[k]])).values()];
+  
+  if (unique.length > 0) {
+    defaultDetails.classList.add('hidden');
+    searchResultCard.classList.add('visible');
+    
+    let html = '';
+    unique.slice(0, 3).forEach(c => {
+      html += '<div class="card" style="margin-bottom: 15px;"><h4>' + c.name + ' – Sector ' + c.sector + '</h4>' +
+        '<p><b>Status:</b> ' + c.status + '</p>' +
+        '<p><b>Stage:</b> ' + c.stage + '</p>' +
+        '<p><b>Day:</b> ' + c.day + '</p>' +
+        '<p><b>Water:</b> ' + c.water + '</p>' +
+        '<p><b>Last Activity:</b> ' + c.activity + '</p>' +
+        '<h4 style="margin-top: 15px;">Lab Test Results</h4>' +
+        'Nitrogen – ' + c.nitrogen + '%<div class="bar"><span style="width:' + c.nitrogen + '%"></span></div>' +
+        'Phosphorus – ' + c.phosphorus + '%<div class="bar"><span style="width:' + c.phosphorus + '%"></span></div>' +
+        'Potassium – ' + c.potassium + '%<div class="bar"><span style="width:' + c.potassium + '%"></span></div>' +
+        '<h4 style="margin-top: 15px;">Disease Log</h4><p>' + c.diseases + '</p></div>';
+    });
+    
+    searchResultCard.innerHTML = '<h4 style="margin-bottom: 15px;">Crop Information</h4>' + html;
+  } else {
+    defaultDetails.classList.add('hidden');
+    searchResultCard.classList.add('visible');
+    searchResultCard.innerHTML = '<div class="card"><p>No crop found for "<strong>' + query + '</strong>". Try: Soyabean, Corn, Wheat, Tomato, Cucumber, Spinach, Potato, Mango</p></div>';
+  }
+});
+</script>
+{% endblock %}

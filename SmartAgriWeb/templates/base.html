@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SmartAgriWeb{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>SmartAgriWeb</h2>
+    <ul>
+      <li {% if request.endpoint == 'home' %}class="active"{% endif %}><a href="{{ url_for('home') }}">Home</a></li>
+      <li {% if request.endpoint == 'crop' %}class="active"{% endif %}><a href="{{ url_for('crop') }}">Crop field Management</a></li>
+      <li {% if request.endpoint == 'water' %}class="active"{% endif %}><a href="{{ url_for('water') }}">Water Irrigation</a></li>
+      <li {% if request.endpoint == 'analytics' %}class="active"{% endif %}><a href="{{ url_for('analytics') }}">Analytics</a></li>
+      <li {% if request.endpoint == 'inventory' %}class="active"{% endif %}><a href="{{ url_for('inventory') }}">Inventory</a></li>
+    </ul>
+    <p style="margin-top: 40px; font-size: 12px;"><a href="{{ url_for('logout') }}" style="color: rgba(255,255,255,0.8);">Logout</a></p>
+  </div>
+
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

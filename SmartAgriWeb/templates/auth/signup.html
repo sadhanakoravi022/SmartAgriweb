@@ -1,0 +1,22 @@
+{% extends "auth/base_auth.html" %}
+{% block title %}SmartAgriWeb | Sign Up{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <h2>Create Account</h2>
+  <p>Register to use SmartAgriWeb</p>
+
+  <form method="POST" action="{{ url_for('signup') }}">
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email Address" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="password" name="confirm" placeholder="Confirm Password" required>
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <p class="auth-link">
+    Already have an account?
+    <a href="{{ url_for('login') }}">Login</a>
+  </p>
+</div>
+{% endblock %}

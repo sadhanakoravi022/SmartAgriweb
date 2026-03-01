@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}SmartAgriWeb | Inventory{% endblock %}
+
+{% block head %}
+<style>
+.header { font-size: 28px; margin-bottom: 20px; font-weight: bold; }
+.container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card { padding: 40px; }
+.highlight { font-size: 24px; font-weight: bold; color: #1db954; margin-top: 10px; }
+.graph { grid-column: span 1; }
+button { background: #1db954; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+button:hover { background: #159c6b; }
+canvas { max-height: 220px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header"><h4>Inventory</h4></div>
+
+<div class="container">
+  <div class="card">
+    <h3>Water Efficiency</h3>
+    <div class="highlight">1.2 kg/L</div>
+  </div>
+  <div class="card">
+    <h3>Operational Cost</h3>
+    <div class="highlight">$1250</div>
+  </div>
+  <div class="card">
+    <h3>Disease Risk</h3>
+    <div class="highlight">Low (15%)</div>
+  </div>
+  <div class="card">
+    <h3>System Uptime</h3>
+    <div class="highlight">99.8%</div>
+  </div>
+  <div class="card">
+    <h3>Yield Simulator</h3>
+    Predicted Yield Change: +3.2%
+  </div>
+  <div class="card">
+    <h3>Custom Report Generator</h3>
+    Data Source: Sensor Vitals & Usage<br>
+    Sector Scope: Sector A Only<br>
+    Date Range: Oct 1, 2023 – Oct 31, 2023<br><br>
+    <label><input type="checkbox" checked> Include AI Insights Summary</label><br>
+    <label><input type="checkbox"> Include Raw CSV Data</label><br><br>
+    <button>Generate & Download Report Package</button>
+  </div>
+  <div class="card graph">
+    <h3>Temperature (°C)</h3>
+    <canvas id="tempChart"></canvas>
+  </div>
+  <div class="card graph">
+    <h3>Soil Moisture (%)</h3>
+    <canvas id="soilChart"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+new Chart(document.getElementById("tempChart"), {
+  type: "line",
+  data: {
+    labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+    datasets: [{
+      label: "Temperature °C",
+      data: [28,30,29,31,33,32,30],
+      borderColor: "#1db954",
+      backgroundColor: "rgba(31,111,91,0.2)",
+      fill: true,
+      tension: 0.4
+    }]
+  }
+});
+new Chart(document.getElementById("soilChart"), {
+  type: "bar",
+  data: {
+    labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+    datasets: [{ label: "Soil Moisture %", data: [60,58,55,57,59,61,58], backgroundColor: "#1db954" }]
+  }
+});
+</script>
+{% endblock %}

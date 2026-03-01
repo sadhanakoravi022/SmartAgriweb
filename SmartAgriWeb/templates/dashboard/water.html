@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}SmartAgriWeb | Water Management{% endblock %}
+
+{% block head %}
+<style>
+.header { background: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+.container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.card h2 { color: #2e8b57; margin-bottom: 10px; }
+.status { font-size: 20px; font-weight: bold; }
+.good { color: green; }
+.warning { color: orange; }
+.danger { color: red; }
+button { background: #2e8b57; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+button:hover { background: #256d46; }
+canvas { width: 100% !important; height: 250px !important; }
+footer { text-align: center; padding: 10px; margin-top: 20px; background: #2e8b57; color: white; border-radius: 6px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header"><h3>Water Irrigation</h3></div>
+
+<div class="container">
+  <div class="card">
+    <h2>🌱 Soil Moisture</h2>
+    <p class="status good">Optimal</p>
+    <p>Moisture: <b>45%</b></p>
+    <p>Soil condition is good for crops.</p>
+  </div>
+  <div class="card">
+    <h2>☀️ Weather</h2>
+    <p>Temperature: <b>32°C</b></p>
+    <p>Humidity: <b>60%</b></p>
+    <p>No rain expected today.</p>
+  </div>
+  <div class="card">
+    <h2>🚿 Irrigation</h2>
+    <p class="status warning">Irrigation Needed</p>
+    <p>Recommended: <b>Early Morning</b></p>
+    <button>Start Irrigation</button>
+  </div>
+  <div class="card">
+    <h2>📊 Water Usage</h2>
+    <p>Today: <b>520 Liters</b></p>
+    <p>This Week: <b>3600 Liters</b></p>
+  </div>
+  <div class="card">
+    <h2>⚠️ Alerts</h2>
+    <p class="status good">No critical alerts</p>
+    <p>All systems working normally.</p>
+  </div>
+  <div class="card">
+    <h2>💡 Saving Tips</h2>
+    <ul>
+      <li>Use drip irrigation</li>
+      <li>Irrigate early morning</li>
+      <li>Avoid over-watering</li>
+      <li>Use rainwater harvesting</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>📈 Weekly Usage</h2>
+    <canvas id="waterChart"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+new Chart(document.getElementById('waterChart'), {
+  type: 'line',
+  data: {
+    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets: [{
+      label: 'Water Used (Liters)',
+      data: [480,500,450,520,490,530,510],
+      borderColor: '#2e8b57',
+      backgroundColor: 'rgba(46,139,87,0.2)',
+      fill: true,
+      tension: 0.3
+    }]
+  },
+  options: { responsive: true, scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% endblock %}

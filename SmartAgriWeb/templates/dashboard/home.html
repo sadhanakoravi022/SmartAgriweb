@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}SmartAgriWeb | Home{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h2>Home</h2>
+  <input class="search" placeholder="Search...">
+</div>
+
+<div class="cards">
+  <div class="card">
+    <h3>Total Water Used</h3>
+    <h1>520 Liters</h1>
+    <span class="green">+10 L</span>
+  </div>
+  <div class="card">
+    <h3>Water Wasted Today</h3>
+    <h1>120 Liters</h1>
+    <span class="red">+30 L</span>
+  </div>
+  <div class="card">
+    <h3>Active Crops</h3>
+    <h1>4 Crops</h1>
+    <span class="green">Need Attention: 1</span>
+  </div>
+  <div class="card">
+    <h3>Alerts</h3>
+    <h1>2</h1>
+    <span class="orange">Low / Over-Irrigation</span>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="box">
+    <h3>Water Usage & Waste</h3>
+    <canvas id="waterChart"></canvas>
+  </div>
+  <div class="box">
+    <h3>Active Crop Overview</h3>
+    <table>
+      <tr><th>Crop</th><th>Stage</th><th>Water</th><th>Status</th></tr>
+      <tr><td>Tomatoes</td><td>Flowering</td><td>40 L/day</td><td><span class="status healthy">Healthy</span></td></tr>
+      <tr><td>Cucumbers</td><td>Harvesting</td><td>30 L/day</td><td><span class="status low">Low Water</span></td></tr>
+      <tr><td>Spinach</td><td>Growing</td><td>25 L/day</td><td><span class="status over">Over-Irrigation</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<br>
+<div class="box">
+  <h3>Alerts</h3>
+  <div class="alert">⚠ Low Water Level – Cucumbers tank below 10%</div>
+  <div class="alert">🚨 Over-Irrigation detected – Spinach</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+new Chart(document.getElementById('waterChart'), {
+  data: {
+    labels: ['Tue','Wed','Thu','Fri','Sat','Sun','Mon'],
+    datasets: [
+      { type: 'bar', label: 'Water Used', data: [350,340,370,420,380,470,500], backgroundColor: '#12b97a', borderRadius: 8 },
+      { type: 'line', label: 'Water Wasted', data: [280,300,320,350,390,430,480], borderColor: '#3498db', tension: 0.4 }
+    ]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% endblock %}
