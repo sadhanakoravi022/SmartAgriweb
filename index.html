@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SmartAgriWeb | Water Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI, sans-serif;
+}
+
+body{
+  background:#f4f6f8;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+  width:260px;
+  min-height:100vh;
+  background:linear-gradient(180deg,#0b8f5a,#0f6f4a);
+  color:white;
+  padding:30px 25px;
+  position:fixed;
+}
+.sidebar h2{
+  font-size:24px;
+  margin-bottom:40px;
+}
+.sidebar ul{
+  list-style:none;
+}
+.sidebar li{
+  padding:14px 10px;
+  margin-bottom:18px;
+  cursor:pointer;
+  font-size:16px;
+  border-radius:6px;
+}
+.sidebar li a{
+  color: white;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  height: 900%;
+}
+.sidebar li.active a{
+  background:#1db954;
+  font-weight:600;
+}
+.sidebar li:hover{
+  background:#159c6b;
+}
+
+/* ================= MAIN ================= */
+.main{
+  margin-left:260px;
+  padding:20px;
+}
+
+/* ================= HEADER ================= */
+.header{
+  background:white;
+  padding:15px 20px;
+  border-radius:8px;
+  margin-bottom:20px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* ================= GRID ================= */
+.container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+  gap:20px;
+}
+
+/* ================= CARDS ================= */
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+.card h2{
+  color:#2e8b57;
+  margin-bottom:10px;
+}
+
+.status{
+  font-size:20px;
+  font-weight:bold;
+}
+
+.good{color:green;}
+.warning{color:orange;}
+.danger{color:red;}
+
+button{
+  background:#2e8b57;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:5px;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+button:hover{
+  background:#256d46;
+}
+
+canvas{
+  width:100% !important;
+  height:250px !important;
+}
+
+/* ================= FOOTER ================= */
+footer{
+  text-align:center;
+  padding:10px;
+  margin-top:20px;
+  background:#2e8b57;
+  color:white;
+  border-radius:6px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+  .sidebar{
+    width:200px;
+  }
+  .main{
+    margin-left:200px;
+  }
+}
+
+@media(max-width:600px){
+  .sidebar{
+    position:relative;
+    width:100%;
+    height:auto;
+  }
+  .main{
+    margin-left:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>SmartAgriWeb</h2>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="Crop.html">Crop Field Management</a></li>
+    <li class="active"><a href="water.html">Water Irrigation</a></li>
+    <li><a href="Analytics.html">Analytics</a></li>
+    <li><a href="Inventory.html">Inventory</a></li>
+  </ul>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+<div class="header">
+  <h3>Water Irregation</h3>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>🌱 Soil Moisture</h2>
+    <p class="status good">Optimal</p>
+    <p>Moisture: <b>45%</b></p>
+    <p>Soil condition is good for crops.</p>
+  </div>
+
+  <div class="card">
+    <h2>☀️ Weather</h2>
+    <p>Temperature: <b>32°C</b></p>
+    <p>Humidity: <b>60%</b></p>
+    <p>No rain expected today.</p>
+  </div>
+
+  <div class="card">
+    <h2>🚿 Irrigation</h2>
+    <p class="status warning">Irrigation Needed</p>
+    <p>Recommended: <b>Early Morning</b></p>
+    <button>Start Irrigation</button>
+  </div>
+
+  <div class="card">
+    <h2>📊 Water Usage</h2>
+    <p>Today: <b>520 Liters</b></p>
+    <p>This Week: <b>3600 Liters</b></p>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ Alerts</h2>
+    <p class="status good">No critical alerts</p>
+    <p>All systems working normally.</p>
+  </div>
+
+  <div class="card">
+    <h2>💡 Saving Tips</h2>
+    <ul>
+      <li>Use drip irrigation</li>
+      <li>Irrigate early morning</li>
+      <li>Avoid over-watering</li>
+      <li>Use rainwater harvesting</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📈 Weekly Usage</h2>
+    <canvas id="waterChart"></canvas>
+  </div>
+<script>
+const ctx = document.getElementById('waterChart');
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [{
+            label: 'Water Used (Liters)',
+            data: [480,500,450,520,490,530,510],
+            borderColor: '#2e8b57',
+            backgroundColor: 'rgba(46,139,87,0.2)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive:true,
+        scales:{
+            y:{
+                beginAtZero:true
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>
